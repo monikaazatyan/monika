@@ -34,14 +34,12 @@ class Register extends CI_Controller {
 
         $this->form_validation->set_rules($rules);
 
-       if($this->form_validation->run() != true){
-           $this->load->view('vRegister'); // Display page
-       }
-        else{
+       if($this->form_validation->run()){
             $form = array();
             $form['user_name'] = $this->input->post('user_name');
             $form['pass'] = md5($this->input->post('password'));
             $form['email'] = $this->input->post('email');
+
             if($this->create_user( $form['user_name'],  $form['pass'], $form['email'])){
                 $data['user_name'] = $form['user_name'];
                 $this->load->view('success_page', $data);
@@ -49,7 +47,9 @@ class Register extends CI_Controller {
             else{
                 echo "Sorry, Couldn't Process Yor Form";
             }
-        }
+        } else {
+           $this->load->view('vRegister');
+       }
     }
 
     public function username_is_taken($input){
@@ -57,13 +57,13 @@ class Register extends CI_Controller {
         $this->db->from('users');
         $this->db->where('user_name', $input);
         $query = $this->db->get();
+
         if($query->num_rows() > 0){
             $this->form_validation->set_message('username_is_taken', 'Sorry the user name <b>'. $input.'</b> is taken!');
             return false;
         }
-        else{
+
             return true;
-        }
     }
 
     public function email_is_taken($input){
@@ -82,10 +82,10 @@ class Register extends CI_Controller {
 
     public function create_user($user, $pass, $email){
         $data = array(
-            'user_name' => $this->protect($user),
-            'email' => $this->protect($email),
+            'user_name' => $user,
+            'email' => $this->$email,
             'type' => '0' ,
-            'password' => $this->protect($pass)
+            'password' => $this->$pass
         );
         if($this->db->insert('users', $data)){
             return true;
@@ -95,8 +95,5 @@ class Register extends CI_Controller {
         }
     }
 
-    public function protect($str){
-        return $str;
-    }
 
 }

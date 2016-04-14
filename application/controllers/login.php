@@ -39,11 +39,13 @@ class Login extends CI_Controller {
                 $info = $query->row();
                 $type = $info -> type;
                 $user_name = $info -> user_name;
+                $id = $info -> id;
                 $this->session->set_userdata('logged_in', true);
                 $this->session->set_userdata('email', $form['email']);
                 $this->session->set_userdata('user_name', $user_name);
                 $this->session->set_userdata('password', $form['pass']);
-                $this->session->set_userdata('$type', $type);
+                $this->session->set_userdata('type', $type);
+                $this->session->set_userdata('id', $id);
                 redirect('dashboard');
             }
         }

@@ -35,13 +35,12 @@ class Register extends CI_Controller {
         $this->form_validation->set_rules($rules);
 
        if($this->form_validation->run()){
-            $form = array();
-            $form['user_name'] = $this->input->post('user_name');
-            $form['pass'] = md5($this->input->post('password'));
-            $form['email'] = $this->input->post('email');
-
-            if($this->create_user( $form['user_name'],  $form['pass'], $form['email'])){
-                $data['user_name'] = $form['user_name'];
+            $user_name = $this->input->post('user_name');
+            $pass = md5($this->input->post('password'));
+            $email = $this->input->post('email');
+            $this->load->model("user");
+            if(  $this->user->create_user($user_name,  $pass, $email)){
+                $data['user_name'] = $user_name;
                 $this->load->view('success_page', $data);
             }
             else{
@@ -80,20 +79,6 @@ class Register extends CI_Controller {
         }
     }
 
-    public function create_user($user, $pass, $email){
-        $data = array(
-            'user_name' => $user,
-            'email' => $this->$email,
-            'type' => '0' ,
-            'password' => $this->$pass
-        );
-        if($this->db->insert('users', $data)){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
 
 
 }
